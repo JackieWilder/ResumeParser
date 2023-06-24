@@ -10,10 +10,11 @@ def get_data(url=''):
         'User-Agent': ua.random
     }
 
-    response = requests.get(url=url, headers=headers)
-    print(response.text)
-    with open('index.html', 'w') as file:
-        file.write(response.text)
+    # чтобы заработало нужно раскомментить
+    #response = requests.get(url=url, headers=headers)
+    #print(response.text)
+    #with open('index.html', 'w') as file:
+        #file.write(response.text)
 
     with open('index.html', 'r') as file:
         src = file.read()
