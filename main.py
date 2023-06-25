@@ -27,7 +27,7 @@ def get_data(url=''):
     data = []
 
     # парсим карточку
-    for link in card_links[:1]:
+    for link in card_links[:2]:
         # делаем запрос на ссылку карточки
         url = 'https://hh.ru' + link
         # print(url)
