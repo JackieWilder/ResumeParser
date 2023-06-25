@@ -73,7 +73,7 @@ def get_data(url=''):
         
 
 def main():
-    proffesion = 'Слесарь' # в дальнейшем включить в интерфейс взаимодействия с пользователем 
+    proffesion = 'python' # в дальнейшем включить в интерфейс взаимодействия с пользователем 
     url = f'https://hh.ru/search/resume?text={proffesion}&area=1&isDefaultArea=true&exp_period=all_time&logic=normal&pos=full_text&fromSearchLine=false'
     
     get_data(url=url)
