@@ -11,23 +11,17 @@ def get_data(url=''):
     }
 
     # чтобы заработало нужно раскомментить
-    #response = requests.get(url=url, headers=headers)
-    #print(response.text)
-    #with open('index.html', 'w') as file:
-        #file.write(response.text)
+    response = requests.get(url=url, headers=headers)
 
-    with open('index.html', 'r') as file:
-        src = file.read()
     
-
-    soup = BeautifulSoup(src, 'lxml')
+    soup = BeautifulSoup(response.text, 'lxml')
     #получаем ссылки на все резюме на странице
     card_links = [link['href'] for link in soup.find_all('a', class_='serp-item__title')]
     
     data = []
 
     # парсим карточку
-    for link in card_links[:2]:
+    for link in card_links:
         # делаем запрос на ссылку карточки
         url = 'https://hh.ru' + link
         # print(url)
@@ -43,18 +37,14 @@ def get_data(url=''):
         work_experience = ' '.join(work_experience.split()[2:])
         # print(work_experience)
         description = {}
-        text = [i for i in soup.find('div', id='a11y-main-content').find_all('p') if i.text]
+        description['Gender'] = soup.find('span', attrs={'data-qa': 'resume-personal-gender'}).text
+        description['Age'] = soup.find('span', attrs={'data-qa': 'resume-personal-age'}).text
+        status = soup.find('div', class_='bloko-translate-guard').find('p').text.split(',')
+        status = [i.strip() for i in status if not i.strip()[:2] == 'м.'][1:]
+        description['Status'] = ' '.join(status)
+    
         
-        # МОЖЕТ ВЫСКОЧИТЬ ОШИБКА ЕСЛИ ТЕКСТА НЕ БУДЕТ (ПЕРЕДЕЛАТЬ, ЧТОБЫ БРАЛОСЬ ПО АТРИБУТАМ А НЕ ПРОСТО ВЕСЬ ТЕКСТ)
-        p1, p2 = text
-        p1, p2 = p1.text.split(','), p2.text.split(',')
-        
-        print(p2)
-        # АНАЛОГИЧНО
-        description['пол'] = p1[0]
-        description['возраст'] = p1[1].replace('\xa0', ' ').split()[0].strip()
-        description['статус'] = str(p2[1].strip()) + ', ' + str(p2[2].strip())
-        description['город'] = p2[0]
+        description['City'] = soup.find('span', attrs={'data-qa': 'resume-personal-address'}).text
 
         # print(description)
 
@@ -75,26 +65,15 @@ def get_data(url=''):
         }
 
         data.append(resume)
+        print('added resume!')
 
     
     with open('data.json', 'w') as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
         
 
-
-
-
-
-
-
-
-
-def get_soup():
-    pass
-
-
 def main():
-    proffesion = 'python' # в дальнейшем включить в интерфейс взаимодействия с пользователем 
+    proffesion = 'Слесарь' # в дальнейшем включить в интерфейс взаимодействия с пользователем 
     url = f'https://hh.ru/search/resume?text={proffesion}&area=1&isDefaultArea=true&exp_period=all_time&logic=normal&pos=full_text&fromSearchLine=false'
     
     get_data(url=url)
