@@ -37,18 +37,19 @@ def get_data(url=''):
         soup = BeautifulSoup(response.text, 'lxml')
 
         # ищем интересующие нас параметры
-        resume_link = url
         resume_title = soup.find('h2', class_='bloko-header-2').text
         # print(resume_title)
-        work_experience = soup.find('h2', class_='bloko-header-2 bloko-header-2_lite').text.replace('\xa0', ' ')
+        work_experience = soup.find('h2', class_='bloko-header-2 bloko-header-2_lite').find('span', class_='resume-block__title-text resume-block__title-text_sub').text
+        work_experience = ' '.join(work_experience.split()[2:])
         # print(work_experience)
         description = {}
         text = [i for i in soup.find('div', id='a11y-main-content').find_all('p') if i.text]
         
-        # МОЖЕТ ВЫСКОЧИТЬ ОШИБКА ЕСЛИ ТЕКСТА НЕ БУДЕТ
+        # МОЖЕТ ВЫСКОЧИТЬ ОШИБКА ЕСЛИ ТЕКСТА НЕ БУДЕТ (ПЕРЕДЕЛАТЬ, ЧТОБЫ БРАЛОСЬ ПО АТРИБУТАМ А НЕ ПРОСТО ВЕСЬ ТЕКСТ)
         p1, p2 = text
         p1, p2 = p1.text.split(','), p2.text.split(',')
         
+        print(p2)
         # АНАЛОГИЧНО
         description['пол'] = p1[0]
         description['возраст'] = p1[1].replace('\xa0', ' ').split()[0].strip()
